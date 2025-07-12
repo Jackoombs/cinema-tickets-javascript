@@ -60,6 +60,22 @@ describe('ticketService', () => {
     )
   })
 
+  it('Should throw an exception if more infant tickets are purchased than adult tickets', () => {
+    const accountId = 1
+    const ticketTypeRequests = [
+      new TicketTypeRequest('ADULT', 1),
+      new TicketTypeRequest('INFANT', 2),
+    ]
+
+    assert.throws(
+      () => ticketService.purchaseTickets(accountId, ...ticketTypeRequests),
+      {
+        message:
+          '1 adult ticket must be purchased for every infant ticket purchased.',
+      }
+    )
+  })
+
   it('Should throw an exception if the ticket limit of 25 is exceeded.', () => {
     const accountId = 1
     const ticketTypeRequests = [
