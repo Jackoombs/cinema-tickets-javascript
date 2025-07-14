@@ -29,7 +29,6 @@ describe('ticketService', () => {
   })
 
   it('Should throw an exception if the account ID is 0 or fewer.', () => {
-    const accountId = 0
     const ticketTypeRequests = [
       new TicketTypeRequest('ADULT', 1),
       new TicketTypeRequest('CHILD', 1),
@@ -37,10 +36,13 @@ describe('ticketService', () => {
     ]
 
     assert.throws(
-      () => ticketService.purchaseTickets(accountId, ...ticketTypeRequests),
+      () => ticketService.purchaseTickets(0, ...ticketTypeRequests),
       {
         message: 'Account ID is invalid.',
       }
+    )
+    assert.doesNotThrow(() =>
+      ticketService.purchaseTickets(1, ...ticketTypeRequests)
     )
   })
 
@@ -78,14 +80,18 @@ describe('ticketService', () => {
 
   it('Should throw an exception if the ticket limit of 25 is exceeded.', () => {
     const accountId = 1
-    const ticketTypeRequests = [
-      new TicketTypeRequest('ADULT', 26),
-      new TicketTypeRequest('CHILD', 0),
-      new TicketTypeRequest('INFANT', 0),
-    ]
+    const ticketTypeRequests = [new TicketTypeRequest('ADULT', 25)]
+    const exceedingTicketTypeRequests = [new TicketTypeRequest('ADULT', 26)]
 
+    assert.doesNotThrow(() =>
+      ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
+    )
     assert.throws(
-      () => ticketService.purchaseTickets(accountId, ...ticketTypeRequests),
+      () =>
+        ticketService.purchaseTickets(
+          accountId,
+          ...exceedingTicketTypeRequests
+        ),
       { message: 'Number of tickets purchased is invalid.' }
     )
   })
@@ -108,12 +114,33 @@ describe('ticketService', () => {
     })
   })
 
-  it('Should not error when only adult tickets are purchased', () => {
+  it('Should not throw when only adult tickets are purchased', () => {
     const accountId = 1
     const ticketTypeRequests = [new TicketTypeRequest('ADULT', 1)]
 
     assert.doesNotThrow(() =>
       ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
+    )
+  })
+
+  it('Should call the ticket calucation service with the correct ticket map', () => {
+    const accountId = 1
+    const ticketTypeRequests = [
+      new TicketTypeRequest('ADULT', 1),
+      new TicketTypeRequest('CHILD', 1),
+      new TicketTypeRequest('INFANT', 1),
+    ]
+
+    const ticketMap = new Map()
+    ticketMap.set('ADULT', 1)
+    ticketMap.set('CHILD', 1)
+    ticketMap.set('INFANT', 1)
+
+    ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
+    assert.strictEqual(calculateTicketPaymentTotalSpy.mock.calls.length, 1)
+    assert.deepStrictEqual(
+      calculateTicketPaymentTotalSpy.mock.calls[0].arguments,
+      [ticketMap]
     )
   })
 
