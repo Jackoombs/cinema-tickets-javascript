@@ -11,7 +11,7 @@ describe('ticketPriceService', () => {
     ticketMap.set('CHILD', 3)
     ticketMap.set('INFANT', 3)
 
-    assert.equal(
+    assert.strictEqual(
       ticketPriceService.calculateTicketPaymentTotal(ticketMap),
       3 * 25 + 3 * 15 + 3 * 0
     )
@@ -19,7 +19,10 @@ describe('ticketPriceService', () => {
 
   it('Should return 0 for empty map', () => {
     const ticketMap = new Map()
-    assert.equal(ticketPriceService.calculateTicketPaymentTotal(ticketMap), 0)
+    assert.strictEqual(
+      ticketPriceService.calculateTicketPaymentTotal(ticketMap),
+      0
+    )
   })
 
   it('Should handle map values of 0', () => {
@@ -28,7 +31,7 @@ describe('ticketPriceService', () => {
     ticketMap.set('CHILD', 3)
     ticketMap.set('INFANT', 3)
 
-    assert.equal(
+    assert.strictEqual(
       ticketPriceService.calculateTicketPaymentTotal(ticketMap),
       3 * 0 + 3 * 15 + 3 * 0
     )
@@ -39,6 +42,9 @@ describe('ticketPriceService', () => {
     ticketMap.set('ADULT', 1)
     ticketMap.set('TEENAGER', 5)
 
-    assert.equal(ticketPriceService.calculateTicketPaymentTotal(ticketMap), 25)
+    assert.strictEqual(
+      ticketPriceService.calculateTicketPaymentTotal(ticketMap),
+      25
+    )
   })
 })
