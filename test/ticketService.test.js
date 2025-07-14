@@ -131,16 +131,16 @@ describe('ticketService', () => {
       new TicketTypeRequest('INFANT', 1),
     ]
 
-    const ticketMap = new Map()
-    ticketMap.set('ADULT', 1)
-    ticketMap.set('CHILD', 1)
-    ticketMap.set('INFANT', 1)
+    const expectedResult = new Map()
+    expectedResult.set('ADULT', 1)
+    expectedResult.set('CHILD', 1)
+    expectedResult.set('INFANT', 1)
 
     ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
     assert.strictEqual(calculateTicketPaymentTotalSpy.mock.calls.length, 1)
     assert.deepStrictEqual(
       calculateTicketPaymentTotalSpy.mock.calls[0].arguments,
-      [ticketMap]
+      [expectedResult]
     )
   })
 
@@ -152,12 +152,14 @@ describe('ticketService', () => {
       new TicketTypeRequest('INFANT', 3),
     ]
 
+    const expectedResult = [1, 3 + 3 + 0]
+
     ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
     assert.strictEqual(makePaymentSpy.mock.calls.length, 1)
-    assert.deepStrictEqual(reserveSeatSpy.mock.calls[0].arguments, [
-      1,
-      3 + 3 + 0,
-    ])
+    assert.deepStrictEqual(
+      reserveSeatSpy.mock.calls[0].arguments,
+      expectedResult
+    )
   })
 
   it('Should call the ticket payment service with the correct payment amount and account ID', () => {
@@ -168,8 +170,13 @@ describe('ticketService', () => {
       new TicketTypeRequest('INFANT', 4),
     ]
 
+    const expectedResult = [1, 100]
+
     ticketService.purchaseTickets(accountId, ...ticketTypeRequests)
     assert.strictEqual(makePaymentSpy.mock.calls.length, 1)
-    assert.deepStrictEqual(makePaymentSpy.mock.calls[0].arguments, [1, 100])
+    assert.deepStrictEqual(
+      makePaymentSpy.mock.calls[0].arguments,
+      expectedResult
+    )
   })
 })

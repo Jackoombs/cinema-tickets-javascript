@@ -11,9 +11,11 @@ describe('ticketPriceService', () => {
     ticketMap.set('CHILD', 3)
     ticketMap.set('INFANT', 3)
 
+    const expectedResult = 3 * 25 + 3 * 15 + 3 * 0
+
     assert.strictEqual(
       ticketPriceService.calculateTicketPaymentTotal(ticketMap),
-      3 * 25 + 3 * 15 + 3 * 0
+      expectedResult
     )
   })
 
@@ -31,9 +33,11 @@ describe('ticketPriceService', () => {
     ticketMap.set('CHILD', 3)
     ticketMap.set('INFANT', 3)
 
+    const expectedResult = 3 * 0 + 3 * 15 + 3 * 0
+
     assert.strictEqual(
       ticketPriceService.calculateTicketPaymentTotal(ticketMap),
-      3 * 0 + 3 * 15 + 3 * 0
+      expectedResult
     )
   })
 
@@ -42,9 +46,11 @@ describe('ticketPriceService', () => {
     ticketMap.set('ADULT', 1)
     ticketMap.set('TEENAGER', 5)
 
+    const expectedResult = 25
+
     assert.strictEqual(
       ticketPriceService.calculateTicketPaymentTotal(ticketMap),
-      25
+      expectedResult
     )
   })
 })
